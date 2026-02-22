@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { testimonials as initialTestimonials } from "@/data/salonData";
+import { useEffect, useState } from "react";
+import { testimonials as staticTestimonials } from "@/data/salonData";
+import { supabase } from "@/integrations/supabase/client";
 import ClientReviewForm from "./ClientReviewForm";
 
 function Stars({ count }: { count: number }) {
@@ -13,25 +14,36 @@ function Stars({ count }: { count: number }) {
 }
 
 interface Review {
+  id: string;
   name: string;
   service: string;
   rating: number;
   text: string;
-  date?: string;
+  created_at: string;
 }
 
 export default function TestimonialsSection() {
-  const [clientReviews, setClientReviews] = useState<Review[]>([]);
+  const [dbReviews, setDbReviews] = useState<Review[]>([]);
+
+  const fetchReviews = async () => {
+    const { data } = await supabase
+      .from("client_reviews")
+      .select("id, name, service, rating, text, created_at")
+      .eq("approved", true)
+      .order("created_at", { ascending: false });
+    setDbReviews(data || []);
+  };
+
+  useEffect(() => { fetchReviews(); }, []);
 
   const allReviews = [
-    ...initialTestimonials.map((t) => ({ ...t, date: undefined })),
-    ...clientReviews,
+    ...staticTestimonials.map((t) => ({ ...t, id: String(t.id), created_at: "" })),
+    ...dbReviews,
   ];
 
-  const avgRating =
-    allReviews.length > 0
-      ? (allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length).toFixed(1)
-      : "5.0";
+  const avgRating = allReviews.length
+    ? (allReviews.reduce((s, r) => s + r.rating, 0) / allReviews.length).toFixed(1)
+    : "5.0";
 
   return (
     <section id="testimonials" className="py-20 gradient-section">
@@ -43,39 +55,29 @@ export default function TestimonialsSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Reviews grid */}
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
             {allReviews.map((t, i) => (
-              <div
-                key={`review-${i}`}
+              <div key={`review-${t.id}`}
                 className="bg-card rounded-2xl p-6 border border-border shadow-card hover:shadow-lg-custom hover:-translate-y-1 transition-all duration-300 animate-fade-in-up"
-                style={{ animationDelay: `${i * 0.1}s` }}
-              >
+                style={{ animationDelay: `${i * 0.1}s` }}>
                 <div className="w-12 h-12 rounded-full gradient-rose flex items-center justify-center text-primary-foreground font-black text-lg mb-4">
                   {t.name[0]}
                 </div>
                 <Stars count={t.rating} />
-                <p className="text-sm text-muted-foreground leading-relaxed my-3 line-clamp-4">
-                  "{t.text}"
-                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed my-3 line-clamp-4">"{t.text}"</p>
                 <div className="border-t border-border pt-3 mt-auto">
                   <div className="font-bold text-foreground text-sm">{t.name}</div>
                   <div className="text-xs text-gold font-medium">{t.service}</div>
-                  {t.date && <div className="text-xs text-muted-foreground mt-1">{t.date}</div>}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Review form */}
           <div className="lg:col-span-1">
-            <ClientReviewForm
-              onSubmit={(review) => setClientReviews((prev) => [review, ...prev])}
-            />
+            <ClientReviewForm onSubmitted={fetchReviews} />
           </div>
         </div>
 
-        {/* Trust badge */}
         <div className="text-center mt-12">
           <div className="inline-flex items-center gap-3 bg-card border border-border rounded-2xl px-6 py-4 shadow-card">
             <span className="text-2xl">⭐</span>
