@@ -1,4 +1,6 @@
-import { testimonials } from "@/data/salonData";
+import { useState } from "react";
+import { testimonials as initialTestimonials } from "@/data/salonData";
+import ClientReviewForm from "./ClientReviewForm";
 
 function Stars({ count }: { count: number }) {
   return (
@@ -10,7 +12,27 @@ function Stars({ count }: { count: number }) {
   );
 }
 
+interface Review {
+  name: string;
+  service: string;
+  rating: number;
+  text: string;
+  date?: string;
+}
+
 export default function TestimonialsSection() {
+  const [clientReviews, setClientReviews] = useState<Review[]>([]);
+
+  const allReviews = [
+    ...initialTestimonials.map((t) => ({ ...t, date: undefined })),
+    ...clientReviews,
+  ];
+
+  const avgRating =
+    allReviews.length > 0
+      ? (allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length).toFixed(1)
+      : "5.0";
+
   return (
     <section id="testimonials" className="py-20 gradient-section">
       <div className="container mx-auto px-4">
@@ -20,33 +42,37 @@ export default function TestimonialsSection() {
           <p className="text-muted-foreground max-w-md mx-auto">رضاكِ هو أجمل جائزة نحصل عليها</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {testimonials.map((t, i) => (
-            <div
-              key={t.id}
-              className="bg-card rounded-2xl p-6 border border-border shadow-card hover:shadow-lg-custom hover:-translate-y-1 transition-all duration-300 animate-fade-in-up"
-              style={{ animationDelay: `${i * 0.1}s` }}
-            >
-              {/* Avatar */}
-              <div className="w-12 h-12 rounded-full gradient-rose flex items-center justify-center text-primary-foreground font-black text-lg mb-4">
-                {t.name[0]}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Reviews grid */}
+          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {allReviews.map((t, i) => (
+              <div
+                key={`review-${i}`}
+                className="bg-card rounded-2xl p-6 border border-border shadow-card hover:shadow-lg-custom hover:-translate-y-1 transition-all duration-300 animate-fade-in-up"
+                style={{ animationDelay: `${i * 0.1}s` }}
+              >
+                <div className="w-12 h-12 rounded-full gradient-rose flex items-center justify-center text-primary-foreground font-black text-lg mb-4">
+                  {t.name[0]}
+                </div>
+                <Stars count={t.rating} />
+                <p className="text-sm text-muted-foreground leading-relaxed my-3 line-clamp-4">
+                  "{t.text}"
+                </p>
+                <div className="border-t border-border pt-3 mt-auto">
+                  <div className="font-bold text-foreground text-sm">{t.name}</div>
+                  <div className="text-xs text-gold font-medium">{t.service}</div>
+                  {t.date && <div className="text-xs text-muted-foreground mt-1">{t.date}</div>}
+                </div>
               </div>
+            ))}
+          </div>
 
-              {/* Stars */}
-              <Stars count={t.rating} />
-
-              {/* Text */}
-              <p className="text-sm text-muted-foreground leading-relaxed my-3 line-clamp-4">
-                "{t.text}"
-              </p>
-
-              {/* Name & service */}
-              <div className="border-t border-border pt-3 mt-auto">
-                <div className="font-bold text-foreground text-sm">{t.name}</div>
-                <div className="text-xs text-gold font-medium">{t.service}</div>
-              </div>
-            </div>
-          ))}
+          {/* Review form */}
+          <div className="lg:col-span-1">
+            <ClientReviewForm
+              onSubmit={(review) => setClientReviews((prev) => [review, ...prev])}
+            />
+          </div>
         </div>
 
         {/* Trust badge */}
@@ -54,8 +80,8 @@ export default function TestimonialsSection() {
           <div className="inline-flex items-center gap-3 bg-card border border-border rounded-2xl px-6 py-4 shadow-card">
             <span className="text-2xl">⭐</span>
             <div className="text-right">
-              <div className="font-black text-foreground text-lg">4.9 / 5</div>
-              <div className="text-muted-foreground text-sm">متوسط تقييم عملائنا</div>
+              <div className="font-black text-foreground text-lg">{avgRating} / 5</div>
+              <div className="text-muted-foreground text-sm">متوسط تقييم {allReviews.length} عميلة</div>
             </div>
           </div>
         </div>
