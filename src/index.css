@@ -6,68 +6,68 @@
 
 @layer base {
   :root {
-    /* Core palette - Rose Gold & Cream luxury */
-    --background: 35 40% 97%;
-    --foreground: 340 20% 15%;
+    /* Modern palette - Mauve & Soft Violet */
+    --background: 270 20% 98%;
+    --foreground: 260 25% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 340 20% 15%;
+    --card-foreground: 260 25% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 340 20% 15%;
+    --popover-foreground: 260 25% 12%;
 
-    /* Primary: Deep Rose Gold */
-    --primary: 345 45% 35%;
-    --primary-foreground: 35 100% 97%;
+    /* Primary: Rich Plum */
+    --primary: 280 40% 40%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Blush Pink */
-    --secondary: 345 30% 92%;
-    --secondary-foreground: 345 45% 35%;
+    /* Secondary: Lavender mist */
+    --secondary: 270 25% 94%;
+    --secondary-foreground: 280 40% 35%;
 
-    /* Muted: Warm cream */
-    --muted: 35 30% 93%;
-    --muted-foreground: 340 15% 50%;
+    /* Muted: Soft grey-violet */
+    --muted: 260 15% 92%;
+    --muted-foreground: 260 12% 48%;
 
-    /* Accent: Gold */
-    --accent: 38 60% 55%;
+    /* Accent: Warm Coral-Rose */
+    --accent: 350 70% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 340 20% 88%;
-    --input: 340 20% 88%;
-    --ring: 345 45% 35%;
+    --border: 260 15% 90%;
+    --input: 260 15% 90%;
+    --ring: 280 40% 40%;
 
     --radius: 0.75rem;
 
     /* Sidebar */
-    --sidebar-background: 35 40% 97%;
-    --sidebar-foreground: 340 20% 15%;
-    --sidebar-primary: 345 45% 35%;
+    --sidebar-background: 270 20% 98%;
+    --sidebar-foreground: 260 25% 12%;
+    --sidebar-primary: 280 40% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 345 30% 92%;
-    --sidebar-accent-foreground: 345 45% 35%;
-    --sidebar-border: 340 20% 88%;
-    --sidebar-ring: 345 45% 35%;
+    --sidebar-accent: 270 25% 94%;
+    --sidebar-accent-foreground: 280 40% 35%;
+    --sidebar-border: 260 15% 90%;
+    --sidebar-ring: 280 40% 40%;
 
     /* Custom design tokens */
-    --gold: 38 60% 55%;
-    --gold-light: 38 60% 75%;
-    --rose-dark: 345 50% 25%;
-    --cream: 35 40% 97%;
-    --blush: 345 40% 90%;
+    --gold: 38 75% 58%;
+    --gold-light: 38 65% 75%;
+    --rose-dark: 280 45% 28%;
+    --cream: 270 20% 98%;
+    --blush: 300 30% 93%;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(345 50% 25% / 0.85), hsl(345 45% 35% / 0.7));
-    --gradient-gold: linear-gradient(135deg, hsl(38 60% 55%), hsl(38 70% 45%));
-    --gradient-rose: linear-gradient(135deg, hsl(345 45% 35%), hsl(345 50% 25%));
-    --gradient-section: linear-gradient(180deg, hsl(35 40% 97%), hsl(345 30% 94%));
+    --gradient-hero: linear-gradient(135deg, hsl(280 50% 20% / 0.88), hsl(320 40% 30% / 0.75));
+    --gradient-gold: linear-gradient(135deg, hsl(38 75% 58%), hsl(25 80% 50%));
+    --gradient-rose: linear-gradient(135deg, hsl(280 40% 40%), hsl(320 45% 35%));
+    --gradient-section: linear-gradient(180deg, hsl(270 20% 98%), hsl(280 20% 95%));
 
     /* Shadows */
-    --shadow-card: 0 4px 20px hsl(345 30% 50% / 0.12);
-    --shadow-gold: 0 4px 20px hsl(38 60% 55% / 0.3);
-    --shadow-lg: 0 10px 40px hsl(345 30% 30% / 0.15);
+    --shadow-card: 0 4px 24px hsl(280 30% 50% / 0.08);
+    --shadow-gold: 0 4px 20px hsl(38 75% 58% / 0.25);
+    --shadow-lg: 0 10px 40px hsl(280 30% 30% / 0.12);
   }
 }
 
@@ -168,6 +168,19 @@
   to { transform: rotate(360deg); }
 }
 
+@keyframes blob-move {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -50px) scale(1.1); }
+  50% { transform: translate(-20px, 20px) scale(0.95); }
+  75% { transform: translate(40px, 30px) scale(1.05); }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease-out forwards;
 }
@@ -179,6 +192,58 @@
 }
 .animate-spin-slow {
   animation: spin-slow 8s linear infinite;
+}
+.animate-blob {
+  animation: blob-move 8s ease-in-out infinite;
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* Animated background */
+.animated-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  background: hsl(var(--background));
+}
+.animated-bg .blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.25;
+  animation: blob-move 10s ease-in-out infinite;
+}
+.animated-bg .blob:nth-child(1) {
+  width: 400px; height: 400px;
+  background: hsl(280 50% 60%);
+  top: -100px; right: -100px;
+}
+.animated-bg .blob:nth-child(2) {
+  width: 350px; height: 350px;
+  background: hsl(350 70% 60%);
+  bottom: -80px; left: -80px;
+  animation-delay: 2s;
+  animation-duration: 12s;
+}
+.animated-bg .blob:nth-child(3) {
+  width: 300px; height: 300px;
+  background: hsl(38 75% 58%);
+  top: 40%; left: 50%;
+  animation-delay: 4s;
+  animation-duration: 14s;
+}
+.animated-bg .blob:nth-child(4) {
+  width: 250px; height: 250px;
+  background: hsl(200 60% 60%);
+  bottom: 30%; right: 20%;
+  animation-delay: 6s;
+  animation-duration: 16s;
 }
 
 /* Chatbot */
