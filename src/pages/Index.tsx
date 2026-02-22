@@ -11,7 +11,14 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen" dir="rtl" lang="ar">
+    <div className="min-h-screen relative" dir="rtl" lang="ar">
+      {/* Animated background blobs */}
+      <div className="animated-bg">
+        <div className="blob" />
+        <div className="blob" />
+        <div className="blob" />
+        <div className="blob" />
+      </div>
       <Navbar />
       <main>
         <HeroSection />
